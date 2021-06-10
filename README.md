@@ -9,58 +9,38 @@
 $ npm install 
 ```
 
+## Configure the token
+Edit the token properties on `./contracts/Token.sol`
+```
+...
+constructor() public {
+        _initialize("BEP20 Token", "BEP20", 18, 200 * 10**6 * 10**18, false);
+    }
+...
+```
+
 ## Deploy BEP-20 token
 ```
 $ export SEED=<your seed phrase> 
-$ truffle migrate --network {development/bsc_testnet}
-```
-## Binding BEP20 token to BEP-2 token (for bsc_testnet)
-Please have a look this [instuction](https://github.com/binance-chain/token-bind-tool#bind-bep2-token-with-bep20-token) and make sure all of requrements for binding.
 
-### Step 1. Import your key to bnbcli
-```
-$ tbnbcli keys add owner --recover
-```
-### Step 2. BEP-2 token issue (example 1 billion tokens and symbol TESTONE-A43)
-```
-$ tbnbcli token issue --symbol TESTONE --token-name "TEST one token" --total-supply 100000000000000000 --from owner --chain-id Binance-Chain-Ganges --node http://data-seed-pre-0-s3.binance.org:80
-```
-### Step 3. BEP-20 token issue 
-See the above deploy command.
-You have to check the following things before deploy token.
-- Token symbol should have to same (if the BEP-2 token name is `SWINGBY-888`, symbol should be `SWINGBY`)
-- Total supply should be same as BEP-2 token supply
-- It may be better to disable the `mintable` on the [Token.sol](contracts/Token.sol).
+For local development on with Ganache:
+$ truffle migrate --network development
 
-### Step 4. Make a binding tx for BC 
-In thie case, the total supply is `100000000000000000`and `60000000000000000` 600 million BEP-2 tokens will be locked into the pure-code-controlled address on BC. then, `40000000000000000` 400 million BEP-20 tokens will be locked into the tokenManager contract on BSC.
-```
-$ tbnbcli bridge bind --symbol TESTONE-A43 --amount 60000000000000000 --expire-time <expiry time e.g. 1603011072> --contract-decimals 18 --from owner --chain-id Binance-Chain-Ganges --contract-address <your token contract address> --node http://data-seed-pre-0-s3.binance.org:80
-```
-### Step 5. Allowance tokens to token manager contract
-```
-$ AMOUNT=40000000000000000 truffle exec scripts/approveTokens.js --network bsc_testnet
-```
-### Step 6. Make a binding tx for BSC
-```
-$ SYMBOL=TESTONE-A43 truffle exec scripts/bindTokenContract.js --network bsc_testnet
-```
-### Step 7. Confirm bind result on BC
-```
-$ tbnbcli token info --symbol TESTONE-A43 --trust-node --node http://data-seed-pre-0-s3.binance.org:80
+For BSC Testnet:
+$ truffle migrate --network bsc_testnet
+
+For BSC Mainnet:
+$ truffle migrate --network bsc_mainnet
 ```
 
-### TrasnferOut BSC from BC (100 TESTONE-A43 tokens will be transferred to BSC address)
+## Verify BEP-20 token
 ```
-$ tbnbcli bridge transfer-out --to <your bsc address> --expire-time <expiry time e.g. 1603011072> --chain-id Binance-Chain-Ganges --from owner --amount 10000000000:TESTONE-A43 --node http://data-seed-pre-0-s3.binance.org:80
-```
+$ export SEED=<your seed phrase> 
+$ export API_KEY=<your bscscan api key> 
 
-### TransferOut BC from BSC (100 TESTONE-A43 tokens will be transferred to BC address)
-```
-$ AMOUNT=<your amount e.g. if decimals == 18, should be set 100> TO=<your bc address> truffle exec scripts/transferOutToBC.js --network bsc_testnet
-```
+For BSC Testnet:
+$ truffle run verify Token --network bsc_testnet
 
-## Test
-```
-$ truffle test
+For BSC Mainnet:
+$ truffle run verify Token --network bsc_mainnet
 ```
