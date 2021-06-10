@@ -4,6 +4,6 @@ import "./BEP20Token.sol";
 
 contract Token is BEP20Token {
     constructor() public {
-        _initialize("SWINGBY token", "SWINGBY", 18, 1 * 10**9 * 10**18, false);
+        _initialize("BEP20 Token", "BEP20", 18, 200 * 10**6 * 10**18, false);
     }
 }

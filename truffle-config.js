@@ -24,10 +24,10 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider')
 
 const mnemonic = process.env.SEED
-
+const api_key = process.env.API_KEY
 
 module.exports = {
   /**
@@ -39,7 +39,10 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
-
+  plugins: ['truffle-plugin-verify'],
+  api_keys: {
+    bscscan: api_key,
+  },
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -48,28 +51,36 @@ module.exports = {
     // options below to some value.
     //
     development: {
-      host: "127.0.0.1",     // Localhost (default: none)
-      port: 8545,            // Standard Ethereum port (default: none)
+      host: '127.0.0.1', // Localhost (default: none)
+      port: 7545, // Ganache Blockchain port
       gasPrice: 70 * 10 ** 9,
-      network_id: "*",       // Any network (default: none)
+      network_id: '*', // Any network (default: none)
     },
 
     ropsten: {
-      provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/540eda0de1434dacaee33f78f33aeb54`),
-      network_id: 3,      // BSC testnet id
-      gas: 5500000,        // BSC testnet has a lower block limit than mainnet
-      confirmations: 3,    // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://ropsten.infura.io/v3/540eda0de1434dacaee33f78f33aeb54`
+        ),
+      network_id: 3, // BSC testnet id
+      gas: 5500000, // BSC testnet has a lower block limit than mainnet
+      confirmations: 3, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
 
     goerli: {
-      provider: () => new HDWalletProvider(mnemonic, `https://goerli.infura.io/v3/540eda0de1434dacaee33f78f33aeb54`),
-      network_id: 5,      // BSC testnet id
-      gas: 5500000,        // BSC testnet has a lower block limit than mainnet
-      confirmations: 3,    // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://goerli.infura.io/v3/540eda0de1434dacaee33f78f33aeb54`
+        ),
+      network_id: 5, // BSC testnet id
+      gas: 5500000, // BSC testnet has a lower block limit than mainnet
+      confirmations: 3, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
     // Another network with more advanced options...
     // advanced: {
@@ -83,22 +94,35 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     bsc_testnet: {
-      provider: () => new HDWalletProvider(mnemonic, `https://data-seed-prebsc-1-s1.binance.org:8545`),
-      network_id: 97,       // Ropsten's id
-      gas: 7500000,        // Ropsten has a lower block limit than mainnet
-      confirmations: 2,    // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-      skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
-      gasPrice: 10000000000
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://data-seed-prebsc-1-s1.binance.org:8545`
+        ),
+      network_id: 97, // Ropsten's id
+      gas: 7500000, // Ropsten has a lower block limit than mainnet
+      confirmations: 2, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+      gasPrice: 10000000000,
     },
+
     bsc_mainnet: {
-      provider: () => new HDWalletProvider(mnemonic, `https://bsc-dataseed.binance.org`, 0, 1, true, "m/44'/519'/0'/0/"),
-      network_id: 56,      // BSC testnet id
-      gas: 1777648,        // BSC testnet has a lower block limit than mainnet
-      confirmations: 3,    // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-      skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets ),
-      gasPrice: 20 * 10 ** 9
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://bsc-dataseed.binance.org`,
+          0,
+          1,
+          true,
+          "m/44'/519'/0'/0/"
+        ),
+      network_id: 56, // BSC testnet id
+      gas: 1777648, // BSC testnet has a lower block limit than mainnet
+      confirmations: 3, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets ),
+      gasPrice: 20 * 10 ** 9,
     },
     // Useful for private networks
     // private: {
@@ -116,7 +140,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.5.16",      // Fetch exact version from solc-bin (default: truffle's version)
+      version: '0.5.16', // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
@@ -127,4 +151,4 @@ module.exports = {
       // }
     },
   },
-};
+}
